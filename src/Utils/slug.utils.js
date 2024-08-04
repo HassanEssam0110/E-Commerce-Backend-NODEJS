@@ -2,6 +2,7 @@ import slugify from 'slugify';
 
 /**
  * This function generates a slug from a given value.
+ * 
  * @param {string} val - The value to generate the slug from.
  * @returns {string} - The generated slug.
  */
