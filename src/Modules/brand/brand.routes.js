@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { checkIsExist, checkIsNotExist, multerHost } from "../../Middlewares/index.js";
+import { auth, checkIsExist, checkIsNotExist, multerHost } from "../../Middlewares/index.js";
 import { extensions, Fields } from "../../Utils/index.js";
 import { SubCategory, Brand } from "../../../DB/Models/index.js";
 import * as controller from "./brand.controller.js";
@@ -9,6 +9,7 @@ const brandRouter = Router();
 
 
 brandRouter.post('/create',
+    auth,
     multerHost({ allowedExtensions: extensions.Images }).single('image'),
     checkIsNotExist(SubCategory, [Fields._id], Fields.Category),
     checkIsExist(Brand, Fields.Name),

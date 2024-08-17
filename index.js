@@ -15,6 +15,7 @@ connection_db();
 const app = express();
 
 // Middlewares
+app.use(express.json())
 app.use(morgan('dev'));
 
 // Mount Routers

@@ -60,4 +60,11 @@ brandSchema.pre('validate', function (next) {
     next();
 });
 
+brandSchema.post('deleteOne', async function () {
+    const _id = this.getQuery()._id;
+    // Delete relevent products
+    const deletedProducts = await mongoose.models.Product.deleteMany({ brand: _id });
+    console.log({ deletedProducts });
+});
+
 export const Brand = model('Brand', brandSchema);

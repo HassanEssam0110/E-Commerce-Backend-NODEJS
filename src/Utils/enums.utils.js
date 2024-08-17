@@ -15,6 +15,7 @@ const DiscountType = {
 const Fields = {
     _id: '_id',
     Name: 'name',
+    Email: 'email',
     Category: "category",
     SubCategory: "subCategory",
     Brand: "brand",

@@ -7,6 +7,7 @@ import * as router from '../Modules/index.js'
  */
 export const bootstrap = (app) => {
   app.get('/', home)
+  app.use('/api/v1/users', router.userRouter)
   app.use('/api/v1/categories', router.categoryRouter)
   app.use('/api/v1/sub-categories', router.subcategoryRouter)
   app.use('/api/v1/brands', router.brandRouter)

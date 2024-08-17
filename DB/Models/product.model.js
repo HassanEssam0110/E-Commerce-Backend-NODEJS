@@ -8,7 +8,6 @@ const { model, Schema } = mongoose;
 const productSchema = new Schema({
     title: {
         type: String,
-        unique: [true, 'title is required.'],
         trim: true,
         required: true,
         minLength: [2, 'too short product title.']
@@ -136,5 +135,8 @@ productSchema.pre('validate', function (next) {
 
     next();
 });
+
+
+
 
 export const Product = model('Product', productSchema);

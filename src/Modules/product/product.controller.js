@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { Product } from "../../../DB/Models/product.model.js";
 import { catchError } from "../../Middlewares/index.js";
-import { ApiError, sendResponse, uploadFile } from "../../Utils/index.js";
+import { ApiError, ApiFeatures, sendResponse, uploadFile } from "../../Utils/index.js";
 
 
 
@@ -11,6 +11,7 @@ import { ApiError, sendResponse, uploadFile } from "../../Utils/index.js";
  * @access Private
  */
 export const createProduct = catchError(async (req, res, next) => {
+    const user = req.user
     // destructure req.body
     const { title, overview, specs, price, discountAmount, discountType, stock } = req.body;
 
@@ -54,6 +55,7 @@ export const createProduct = catchError(async (req, res, next) => {
         brand: brandDocument._id,
         category: brandDocument.category._id,
         subCategory: brandDocument.subCategory._id,
+        createdBy: user._id
     };
 
     const newProduct = await Product.create(productObject);
@@ -85,14 +87,20 @@ export const updateProduct = catchError(async (req, res, next) => {
 
 
 export const getProductList = catchError(async (req, res, next) => {
-    const { page = 1, limit = 5 } = req.query;
-    const skip = (page - 1) * limit;
+    // 1- Get total document count
+    const countDocuments = await Product.countDocuments(); // get total document count
 
-    const products = await Product.paginate({}, {
-        page,
-        limit,
-        skip,
-    });
+    // 2- Build query using ApiFeatures   
+    const apiFeatures = new ApiFeatures(Product.find(), req.query)
+        .pagination(countDocuments)
+        .filter()
+        .sort()
+        .fields()
+        .search()
 
-    return sendResponse(res, { data: products });
+    // 3- Execute query
+    const { mongooseQuery, paginationResult } = apiFeatures
+    const documents = await mongooseQuery;
+
+    return sendResponse(res, { pagination: paginationResult, count: documents.length, documents });
 });

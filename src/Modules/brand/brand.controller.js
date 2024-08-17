@@ -15,6 +15,7 @@ export const createBrand = catchError(async (req, res, next) => {
     const subCategory = await req.document;
     const { category } = subCategory;
     const { name } = req.body;
+    const user = req.user;
 
     // Uploade image to cloudnary.
     const customId = nanoid(6);
@@ -32,7 +33,8 @@ export const createBrand = catchError(async (req, res, next) => {
             customId,
         },
         category: category._id,
-        subCategory: subCategory._id
+        subCategory: subCategory._id,
+        createdBy: user._id
     };
 
     const newBrand = await Brand.create(brand);
@@ -115,10 +117,8 @@ export const deleteBrand = catchError(async (req, res, next) => {
     await cloudinaryConfig().api.delete_resources_by_prefix(brandPath);
     await cloudinaryConfig().api.delete_folder(brandPath);
 
-    // Delete category
+    // Delete Brand
     await brand.deleteOne();
-
-    // todo delete related product 
 
     return sendResponse(res);
 });
