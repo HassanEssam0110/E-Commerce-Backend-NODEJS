@@ -14,6 +14,7 @@ import { Brand, SubCategory } from '../../../DB/Models/index.js';
 export const createSubCategory = catchError(async (req, res, next) => {
     const category = req.document;
     const { name } = req.body;
+    const user = req.user;
 
     // Uploade image to cloudnary.
     const customId = nanoid(6);
@@ -30,7 +31,8 @@ export const createSubCategory = catchError(async (req, res, next) => {
             public_id,
             customId,
         },
-        category: category._id
+        category: category._id,
+        createdBy: user._id
     }
 
     const newSubCategory = await SubCategory.create(subcategory);
@@ -112,39 +114,46 @@ export const deleteSubCategory = catchError(async (req, res, next) => {
     // Delete sub-category 
     const deletedSubCategory = await subCategory.deleteOne();
 
-    // Delete relevent brands
-    if (deletedSubCategory.deletedCount) {
-        await Brand.deleteMany({ subCategory: subCategory._id });
-    }
-
     return sendResponse(res);
 });
 
 
 /**
  * @description   Get a list of sub-categories with their related brands.
- * @route {GET} /api/v1/categories
+ * @route {GET} /api/v1/sub-categories
  * @param {number} [req.query.page=1] - Page number for pagination.
  * @param {number} [req.query.limit=5] - Number of items per page for pagination.
  */
-export const getSubCategoryList = catchError(async (req, res, next) => {
+export const getSubCategoryListWithBrands = catchError(async (req, res, next) => {
     const { page = 1, limit = 5 } = req.query;
     const skip = (page - 1) * limit;
 
-    const subCategories = await SubCategory.paginate({}, {
-        page,
-        limit,
-        skip,
-    });
+    const subCategories = await SubCategory.find().skip(skip).limit(limit).populate('category');
 
     // Convert the paginated result to plain object to add subcategories
-    const subCategoryDocs = subCategories.docs.map(subCategory => subCategory.toObject());
+    const subCategoryDocs = subCategories.map(subCategory => subCategory.toObject());
 
     await Promise.all(subCategoryDocs.map(async subCategory => {
         const brands = await Brand.find({ subCategory: subCategory._id })
         subCategory.brands = brands;
     }));
 
-    subCategories.docs = subCategoryDocs;
-    return sendResponse(res, { data: subCategories });
+    return sendResponse(res, { count: subCategoryDocs.length, data: subCategoryDocs });
+});
+
+
+/**
+ * @description   Get a list of sub-categories with their related brands.
+ * @route {GET} /api/v1/sub-categories
+ * @param {number} [req.query.page=1] - Page number for pagination.
+ * @param {number} [req.query.limit=5] - Number of items per page for pagination.
+ */
+export const getSubCategoryList = catchError(async (req, res, next) => {
+    const { page = 1, limit = 5 } = req.query;
+    const skip = (page - 1) * limit;
+    console.log(req.params);
+    let filterObj = {}
+    if (req.params.categoryId) filterObj.category = req.params.categoryId;
+    const subCategories = await SubCategory.find(filterObj);
+    return sendResponse(res, { count: subCategories.length, data: subCategories });
 });

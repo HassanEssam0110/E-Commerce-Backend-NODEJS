@@ -55,4 +55,19 @@ subcategorySchema.pre('validate', function (next) {
     next();
 });
 
+
+subcategorySchema.post('deleteOne', async function () {
+    const _id = this.getQuery()._id;
+    console.log("======= post hook working======");
+    // Delete relevent brand
+    const deletedBrands = await mongoose.models.Brand.deleteMany({ subCategory: _id });
+    console.log({ deletedBrands });
+
+    // Delete relevent products
+    if (deletedBrands.deletedCount) {
+        const deletedProducts = await mongoose.models.Product.deleteMany({ subCategory: _id });
+        console.log({ deletedProducts });
+    }
+});
+
 export const SubCategory = model('SubCategory', subcategorySchema);

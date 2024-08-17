@@ -1,12 +1,16 @@
 import { Router } from "express";
-import { multerHost, checkIsExist, checkIsNotExist } from "../../Middlewares/index.js";
+import { multerHost, checkIsExist, checkIsNotExist, auth } from "../../Middlewares/index.js";
 import { extensions, Fields } from "../../Utils/index.js";
 import { Category } from "../../../DB/Models/index.js";
 import * as controller from "./category.controller.js";
+import { subcategoryRouter } from "../subcategory/subcategory.routes.js";
 
 const categoryRouter = Router();
 
+categoryRouter.use('/:categoryId/sub-categories', subcategoryRouter)
+
 categoryRouter.post('/create',
+    auth,
     multerHost({ allowedExtensions: extensions.Images }).single('image'),
     checkIsExist(Category, Fields.Name),
     controller.createCategory

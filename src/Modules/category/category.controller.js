@@ -12,6 +12,7 @@ import { Category, SubCategory, Brand } from '../../../DB/Models/index.js';
  */
 export const createCategory = catchError(async (req, res, next) => {
     const { name } = req.body;
+    const user = req.user;
 
     // Uploade image to cloudnary.
     const customId = nanoid(6);
@@ -28,6 +29,7 @@ export const createCategory = catchError(async (req, res, next) => {
             public_id,
             customId,
         },
+        createdBy: user._id
     }
 
     const newCategory = await Category.create(category);
@@ -104,18 +106,6 @@ export const deleteCategory = catchError(async (req, res, next) => {
     // Delete category 
     const deletedCategory = await category.deleteOne();
 
-    // Delete relevent sub-category 
-    if (deletedCategory.deletedCount) {
-
-        const deletedSubCategories = await SubCategory.deleteMany({ category: category._id });
-
-        // Delete relevent brand
-        if (deletedSubCategories.deletedCount) {
-            const deletedBrands = await Brand.deleteMany({ category: category._id });
-        }
-    }
-
-
     return sendResponse(res);
 });
 
@@ -135,7 +125,7 @@ export const getCategoryList = catchError(async (req, res, next) => {
         limit,
         skip,
     });
- 
+
     // Convert the paginated result to plain object to add subcategories
     const categoryDocs = categories.docs.map(category => category.toObject());
 
