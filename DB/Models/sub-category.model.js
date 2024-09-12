@@ -70,4 +70,4 @@ subcategorySchema.post('deleteOne', async function () {
     }
 });
 
-export const SubCategory = model('SubCategory', subcategorySchema);
+export const SubCategory = mongoose.models.SubCategory || model('SubCategory', subcategorySchema);

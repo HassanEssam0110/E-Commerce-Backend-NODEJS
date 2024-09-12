@@ -1,7 +1,8 @@
-import { User } from "../../../DB/Models/index.js";
+import { User, Address } from "../../../DB/Models/index.js";
 import { catchError } from "../../Middlewares/index.js";
 import { ApiError, bcryptCompare, cryptoHashData, generateOTP, generateToken, MsgHTML, sendResponse, sentOTP } from "../../Utils/index.js";
 import { sendMails } from "../../services/index.js";
+
 
 
 /**
@@ -9,34 +10,39 @@ import { sendMails } from "../../services/index.js";
  * @route {POST} /api/v1/users/register
  */
 export const register = catchError(async (req, res, next) => {
-    const { username, email, password, phone, age, gender, role } = req.body;
+    const { username, email, password, phone, age, gender, role, country, city, postalCode, buildingNumber, floorNumber, addressLabel } = req.body;
     // 1- create  inctence from user.
     const userObject = new User({ username, email, password, phone, age, gender, role });
 
-    // 2- generate OTP
-    const otp = generateOTP();
-    userObject.emailVerifyCode = cryptoHashData(otp.toString());
-    userObject.emailVerifyExpires = new Date(Date.now() + 10 * 60 * 1000);
+    // 2 create inctence from address
+    const addressObject = new Address({ user: userObject._id, country, city, postalCode, buildingNumber, floorNumber, addressLabel, isDefault: true })
+
+    // 3- generate OTP
+    // const otp = generateOTP();
+    // userObject.emailVerifyCode = cryptoHashData(otp.toString());
+    // userObject.emailVerifyExpires = new Date(Date.now() + 10 * 60 * 1000);
 
 
-    // 3- send confirmation email
-    const isEmailSent = await sentOTP({
-        to: userObject.email,
-        subject: "Welcome to E-commerce App - Verify your email address",
-        otp,
-        userName: userObject.username,
-        textmessage: 'Thank you for choosing our App. Please use the following OTP to complete your sign-up process. The OTP is valid for 10 minutes.',
-    });
+    // 4- send confirmation email
+    // const isEmailSent = await sentOTP({
+    //     to: userObject.email,
+    //     subject: "Welcome to E-commerce App - Verify your email address",
+    //     otp,
+    //     userName: userObject.username,
+    //     textmessage: 'Thank you for choosing our App. Please use the following OTP to complete your sign-up process. The OTP is valid for 10 minutes.',
+    // });
 
-    if (isEmailSent?.rejected.length) {
-        userObject.emailVerifyCode = undefined;
-        userObject.emailVerifyExpires = undefined;
-        return next(new ApiError('send verification Email is faild', 500, 'signUp controller'))
-    };
+    // if (isEmailSent?.rejected.length) {
+    //     userObject.emailVerifyCode = undefined;
+    //     userObject.emailVerifyExpires = undefined;
+    //     return next(new ApiError('send verification Email is faild', 500, 'signUp controller'))
+    // };
 
-    // 4- save user in DB
+    // 5- save user and address in DB
     const newUser = await userObject.save();
-    return sendResponse(res, { data: newUser }, 201);
+    const newAddress = await addressObject.save();
+
+    return sendResponse(res, { data: { user: newUser, address: newAddress }, }, 201);
 });
 
 /**

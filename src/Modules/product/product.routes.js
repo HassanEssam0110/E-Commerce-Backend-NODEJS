@@ -9,13 +9,13 @@ const productRouter = Router();
 
 productRouter.get('/',
     controller.getProductList
-)
+);
 
 productRouter.post('/create',
     auth,
     multerHost({ allowedExtensions: extensions.Images }).array('image', 5),
     checkIsNotExist(Brand, [Fields._id, Fields.Category, Fields.SubCategory], Fields.Category_SubCategory),
-    controller.createProduct)
+    controller.createProduct);
 
 productRouter.put('/update/:_id',
     multerHost({ allowedExtensions: extensions.Images }).array('image', 5),

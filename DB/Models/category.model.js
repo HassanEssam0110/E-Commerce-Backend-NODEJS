@@ -66,4 +66,5 @@ categorySchema.post('deleteOne', async function () {
     }
 });
 
-export const Category = model('Category', categorySchema);
+
+export const Category = mongoose.models.Category || model('Category', categorySchema);

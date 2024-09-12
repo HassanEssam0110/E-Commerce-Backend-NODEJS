@@ -17,7 +17,7 @@ const checkIsExist = (model, fieldName) => {
         if (value) {
             const queryObject = { [fieldName]: value };
             const document = await model.findOne(queryObject);
-            if (document) return next(new ApiError(`A document with the ${fieldName}: ${value} already exists in ${model.modelName}.`, 400))
+            if (document) return next(new ApiError(`${fieldName}: ${value} already exists in ${model.modelName}.`, 400))
         }
 
         next();
@@ -40,7 +40,6 @@ const checkIsNotExist = (model, fields = ["_id"], populationOpt) => {
         for (const field of fields) {
             queryObject[field] = req.query[field] || req.params[field];
         };
-
         // 1- Buld Query
         const query = model.findOne(queryObject);
 

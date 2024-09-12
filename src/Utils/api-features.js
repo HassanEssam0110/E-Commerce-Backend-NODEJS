@@ -57,7 +57,7 @@ export class ApiFeatures {
     filter() {
         let filterObj = structuredClone(this.query); // deep copy
 
-        let excludeFields = ['page', 'limit', 'fields', 'sort'];
+        let excludeFields = ['page', 'limit', 'fields', 'sort','search'];
         excludeFields.forEach(val => delete filterObj[val]);
 
         filterObj = JSON.stringify(filterObj);
@@ -87,30 +87,20 @@ export class ApiFeatures {
         return this;
     }
 
-    search(modelName) {
+    search() {
         if (this.query.search) {
-            const keyword = this.query.search
-            // let query = {};
-
-            const query = {
+            const keyword = this.query.search;
+            const searchQuery = {
                 $or: [
                     { title: { $regex: keyword, $options: 'i' } },
                     { overview: { $regex: keyword, $options: 'i' } }
                 ]
             };
 
-            // Log the search query for debugging
-            console.log("Search query:", keyword);
-            console.log("Constructed query:", JSON.stringify(query, null, 2));
+            console.log('Search Query:', JSON.stringify(searchQuery, null, 2));
+            console.log('Search Keyword:', keyword);
 
-            this.mongooseQuery.find(query);
-            
-            // this.mongooseQuery.find({
-            //     $or: [
-            //         { title: { $regex: keyword, $options: 'i' } },
-            //         { overview: { $regex: keyword, $options: 'i' } }
-            //     ]
-            // });
+            this.mongooseQuery.find(searchQuery);
         }
 
         return this;
