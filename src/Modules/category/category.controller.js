@@ -126,6 +126,7 @@ export const getCategoryList = catchError(async (req, res, next) => {
         skip,
     });
 
+    // todo search to agriation with subcategories
     // Convert the paginated result to plain object to add subcategories
     const categoryDocs = categories.docs.map(category => category.toObject());
 

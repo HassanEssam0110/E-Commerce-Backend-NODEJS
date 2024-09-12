@@ -1,4 +1,5 @@
-import mongoose from '../global-setup.js';
+// import mongoose from '../global-setup.js';
+import mongoose from 'mongoose';
 
 import { Badgs, DiscountType, generateSlug } from '../../src/Utils/index.js';
 
@@ -137,6 +138,4 @@ productSchema.pre('validate', function (next) {
 });
 
 
-
-
-export const Product = model('Product', productSchema);
+export const Product = mongoose.models.Product || model('Product', productSchema);

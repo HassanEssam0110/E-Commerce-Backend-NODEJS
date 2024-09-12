@@ -12,6 +12,10 @@ export const bootstrap = (app) => {
   app.use('/api/v1/sub-categories', router.subcategoryRouter)
   app.use('/api/v1/brands', router.brandRouter)
   app.use('/api/v1/products', router.productRouter)
+  app.use('/api/v1/addresses', router.addressRouter)
+  app.use('/api/v1/carts', router.cartRouter)
+  app.use('/api/v1/coupons', router.couponRouter)
+  app.use('/api/v1/orders', router.orderRouter)
 }
 
 

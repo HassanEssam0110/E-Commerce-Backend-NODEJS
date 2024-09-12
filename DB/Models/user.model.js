@@ -1,5 +1,7 @@
-import { bcryptHashData } from '../../src/Utils/hash-data.utils.js';
 import mongoose from '../global-setup.js';
+
+import { Gender, SystemRoles, bcryptHashData } from '../../src/Utils/index.js';
+
 const { model, Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -27,8 +29,8 @@ const userSchema = new Schema({
     },
     gender: {
         type: String,
-        enum: ['male', 'female'],
-        default: 'male'
+        enum: Object.values(Gender),
+        default: Gender.Male
     },
     phone: {
         type: String,
@@ -38,13 +40,6 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    // otpCode: {
-    //     type: String,
-    // },
-    // otpExpire: {
-    //     type: Date,
-    // },
-
     isMarkedAsDeleted: {
         type: Boolean,
         default: false
@@ -55,8 +50,8 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'user'],
-        default: 'user'
+        enum: Object.values(SystemRoles),
+        default: SystemRoles.USER
     },
 }, { timestamps: true, versionKey: false });
 
@@ -67,4 +62,4 @@ userSchema.pre('save', function (next) {
     next();
 })
 
-export const User = mongoose.model.User || model('User', userSchema);
+export const User = mongoose.models.User || model('User', userSchema);

@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import { config } from 'dotenv';
 
 import connection_db from './DB/connection-database.js';
-import { bootstrap, ApiError } from './src/Utils/index.js';
+import { bootstrap, ApiError, disableCouponsCron } from './src/Utils/index.js';
 import { globalError } from './src/Middlewares/index.js'
 
 // Load environment variables from a .env file into process.env
@@ -18,6 +18,7 @@ const app = express();
 app.use(express.json())
 app.use(morgan('dev'));
 
+disableCouponsCron();
 // Mount Routers
 bootstrap(app);
 

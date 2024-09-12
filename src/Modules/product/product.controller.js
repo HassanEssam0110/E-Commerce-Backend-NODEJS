@@ -92,11 +92,11 @@ export const getProductList = catchError(async (req, res, next) => {
 
     // 2- Build query using ApiFeatures   
     const apiFeatures = new ApiFeatures(Product.find(), req.query)
-        .pagination(countDocuments)
+        .search()
         .filter()
         .sort()
         .fields()
-        .search()
+        .pagination(countDocuments)
 
     // 3- Execute query
     const { mongooseQuery, paginationResult } = apiFeatures

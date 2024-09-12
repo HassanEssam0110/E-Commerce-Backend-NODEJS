@@ -67,4 +67,5 @@ brandSchema.post('deleteOne', async function () {
     console.log({ deletedProducts });
 });
 
-export const Brand = model('Brand', brandSchema);
+
+export const Brand = mongoose.models.Brand || model('Brand', brandSchema);
