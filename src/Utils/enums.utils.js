@@ -1,16 +1,16 @@
-// user Roles
+// ==> user Roles
 const SystemRoles = {
     ADMIN: 'admin',
     USER: 'user',
 }
 
-// user 
+// ==> user 
 const Gender = {
     Male: 'male',
     Female: 'female'
 }
 
-// Product
+// ==> Product
 const Badgs = {
     New: 'New',
     Sale: 'Sale',
@@ -22,15 +22,14 @@ const DiscountType = {
     Fixed: 'Fixed'
 }
 
-
-// Coupon
+// ==> Coupon
 const CouponType = {
     Percentage: 'Percentage',
     Fixed: 'Fixed'
 }
 
 
-// Fields Name 
+// ==> Fields Name 
 const Fields = {
     _id: '_id',
     Name: 'name',
@@ -45,6 +44,8 @@ const Fields = {
     Coupon_id: "couponId"
 }
 
+
+// ==> Order
 const PaymentMethods = {
     Stripe: 'stripe',
     Paymob: 'paymob',
@@ -64,6 +65,13 @@ const OrderSatus = {
     OnWay: 'onWay'
 }
 
+// ==> Review
+const ReviewStatus = {
+    Pending: 'pending',
+    Approved: 'approved',
+    Rejected: 'rejected'
+}
+
 export {
     SystemRoles,
     Gender,
@@ -72,5 +80,6 @@ export {
     CouponType,
     Fields,
     PaymentMethods,
-    OrderSatus
+    OrderSatus,
+    ReviewStatus
 }

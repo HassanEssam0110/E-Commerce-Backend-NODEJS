@@ -57,13 +57,13 @@ export class ApiFeatures {
     filter() {
         let filterObj = structuredClone(this.query); // deep copy
 
-        let excludeFields = ['page', 'limit', 'fields', 'sort','search'];
+        let excludeFields = ['page', 'limit', 'fields', 'sort', 'search'];
         excludeFields.forEach(val => delete filterObj[val]);
 
         filterObj = JSON.stringify(filterObj);
         filterObj = filterObj.replaceAll(/lt|lte|gt|gte|eq|ne|regex/g, (ele) => `$${ele}`);
         filterObj = JSON.parse(filterObj);
-
+        console.log(filterObj);
         this.mongooseQuery.find(filterObj);
 
         return this;
