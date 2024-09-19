@@ -16,6 +16,7 @@ export const bootstrap = (app) => {
   app.use('/api/v1/carts', router.cartRouter)
   app.use('/api/v1/coupons', router.couponRouter)
   app.use('/api/v1/orders', router.orderRouter)
+  app.use('/api/v1/reviews', router.reviewRouter)
 }
 
 

@@ -110,7 +110,13 @@ const productSchema = new Schema({
         ref: "User",
         required: false,
     },
-}, { timestamps: true, versionKey: false });
+}, {
+    timestamps: true,
+    versionKey: false,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    id: false,
+});
 
 
 // Middleware to generate slug before validation
@@ -137,5 +143,12 @@ productSchema.pre('validate', function (next) {
     next();
 });
 
+
+
+productSchema.virtual('Reviews', {
+    ref: 'Review',
+    localField: '_id',
+    foreignField: 'product',
+});
 
 export const Product = mongoose.models.Product || model('Product', productSchema);

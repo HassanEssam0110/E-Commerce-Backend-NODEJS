@@ -1,17 +1,12 @@
-import mongoose from '../global-setup.js';
+import mongoose from 'mongoose';
+import { ReviewStatus } from '../../src/Utils/index.js';
+
 const { model, Schema } = mongoose;
 
 const reviewSchema = new Schema({
-    comment: Sting,
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
-    },
-    rate: {
-        type: Number,
-        min: 0,
-        max: 5,
         required: true
     },
     product: {
@@ -19,6 +14,23 @@ const reviewSchema = new Schema({
         ref: 'Product',
         required: true
     },
+    rate: {
+        type: Number,
+        min: 1,
+        max: 5,
+        required: true
+    },
+    comment: String,
+    reviewStatus: {
+        type: String,
+        enum: Object.values(ReviewStatus),
+        default: ReviewStatus.Pending
+    },
+    actionDoneBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    }
+
 }, { timestamps: true, versionKey: false });
 
 

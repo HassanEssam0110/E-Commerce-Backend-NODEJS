@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { Product } from "../../../DB/Models/product.model.js";
 import { catchError } from "../../Middlewares/index.js";
-import { ApiError, ApiFeatures, sendResponse, uploadFile } from "../../Utils/index.js";
+import { ApiError, ApiFeatures, sendResponse, uploadFile, ReviewStatus } from "../../Utils/index.js";
 
 
 
@@ -100,7 +100,12 @@ export const getProductList = catchError(async (req, res, next) => {
 
     // 3- Execute query
     const { mongooseQuery, paginationResult } = apiFeatures
-    const documents = await mongooseQuery;
+    const documents = await mongooseQuery.populate([
+        { path: 'brand', select: 'name' },
+        { path: 'category', select: 'name' },
+        { path: 'subCategory', select: 'name' },
+        { path: 'Reviews', match: { reviewStatus: ReviewStatus.Approved } },
+    ]);
 
     return sendResponse(res, { pagination: paginationResult, count: documents.length, documents });
 });
